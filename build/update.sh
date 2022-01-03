@@ -7,8 +7,8 @@ cd ..
 # Get version from NPM
 mkdir -p build/tmp/
 
-NPM_JSON="build/tmp/npm-uglify-es.json"
-curl --silent --show-error https://registry.npmjs.org/uglify-es > "$NPM_JSON"
+NPM_JSON="build/tmp/npm-uglify-js.json"
+curl --silent --show-error https://registry.npmjs.org/uglify-js > "$NPM_JSON"
 
 VERSION=$(jq -r '."dist-tags".latest' "$NPM_JSON")
 VERSION_GIT_HEAD=$(jq -r '.versions[."dist-tags".latest].gitHead' "$NPM_JSON")
@@ -67,10 +67,14 @@ fi
 
 
 # Update version
-sed -i 's/\(<code id="version">\)[^<]*\(<\/code>\)/\1uglify-es '"$VERSION"'\2/' index.html
+if [[ `uname` == 'Darwin' ]]; then
+    sed -i "" 's/\(<code id="version">\)[^<]*\(<\/code>\)/\1uglify-js '"$VERSION"'\2/' index.html
+else
+    sed -i 's/\(<code id="version">\)[^<]*\(<\/code>\)/\1uglify-js '"$VERSION"'\2/' index.html
+fi
 
 
 # Commit and push
 git add index.html
 git add uglify
-git commit -m "Update to uglify-es $VERSION"
+git commit -m "Update to uglify-js $VERSION"
